@@ -75,26 +75,18 @@ namespace SharpVectors.Converters
         /// The file can be located on a computer, network or assembly resources.
         /// Settings this to <see langword="null"/> will close any opened diagram.
         /// </value>
-        public Uri Source
-        {
-            get
-            {
-                return _sourceUri;
-            }
-            set
-            {
-                _sourceUri = value;
+        public Uri Source { get { return (Uri)GetValue(SourceProperty); } set { SetValue(SourceProperty, value); } }
 
-                if (_sourceUri == null)
-                {
-                    this.OnUnloadDiagram();
-                }
-                else
-                {
-                    this.OnSettingsChanged();
-                }
+        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(SvgViewbox), new FrameworkPropertyMetadata(null, (s, e) => {
+            var src = (SvgViewbox)s;
+            src._sourceUri = (Uri)e.NewValue;
+
+            if (src._sourceUri == null) {
+                src.OnUnloadDiagram();
+            } else {
+                src.OnSettingsChanged();
             }
-        }
+        }));
 
         /// <summary>
         /// Gets the drawing canvas, which is the child of this <see cref="Viewbox"/>.
